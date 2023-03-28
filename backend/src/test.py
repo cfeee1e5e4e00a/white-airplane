@@ -40,8 +40,7 @@ def relay_controller_init():
 
     d = RelayController(supplies)
 
-    print(d.house_clients)
-    print(d.supply_clients)
+    print(d.publisher)
 
 def relay_controller_publish_scheme():
     def count(i: int):
