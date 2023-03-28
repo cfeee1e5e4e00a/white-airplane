@@ -1,0 +1,27 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: development
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: LuisEnMarroquin/setup-ssh-action@v2.0.0
+        with:
+          NAME: remote
+          USER: ${{ vars.SSH_USER }}
+          ORIGIN: ${{ vars.SSH_ORIGIN }}
+          SSHKEY: ${{ secrets.SSH_KEY }}
+
+      - run: |
+          docker compose up -d --build
+        env:
+          DOCKER_HOST: ssh://remote
