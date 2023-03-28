@@ -1,0 +1,11 @@
+fastapi
+pymongo
+uvicorn
+paho-mqtt
+redis
+fastapi-login
+python-jose[cryptography]
+python-dotenv
+passlib[bcrypt]
+PyJWT
+strawberry-graphql[fastapi]
