@@ -63,7 +63,7 @@ def balance_by_efficiency(
         ]
     }
 
-def balance_by_hymidity(
+def balance_by_humidity(
     power_supplies: List[PowerSupply]
 ) -> Dict[str, List[List[bool]]]:
     """Flat Humidity based load balance strategy."""

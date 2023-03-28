@@ -1,0 +1,12 @@
+---
+- name: setup nginx
+  hosts: all
+  tasks:
+    - apt: name=nginx state=latest
+
+    - service:
+        name: nginx
+        state: started
+
+    - copy:
+        src:
