@@ -14,6 +14,7 @@ DEFAULT_HOUSE_COUNT = 6
 DEFAULT_FLAT_COUNT = 2
 DEFAULT_RELAY_COUNT = 14
 
+
 @dataclass
 class Flat:
     """
@@ -41,7 +42,7 @@ class House:
     @property
     def house_consumption(self) -> Amps:
         """:return: Integral for house consumption."""
-        return sum(flat.consumpiton_current for flat in self.flats)
+        return sum(flat.consumption_current for flat in self.flats)
 
 @dataclass
 class PowerSupply:
@@ -70,5 +71,5 @@ class PowerSupply:
 
     @property
     def efficiency(self) -> float:
-        """:return: power supply efficency."""
+        """:return: power supply efficiency."""
         return self.power / self.ideal_power

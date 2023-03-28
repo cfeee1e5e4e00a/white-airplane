@@ -27,7 +27,7 @@ class LoadBalancer(Protocol):
 def apply_balancer(
     load_balancer: LoadBalancer,
     power_supplies: List[PowerSupply]
-) -> Dict[str, List[bool]]:
+) -> Dict[str, List[List[bool]]]:
     """Apply balancing Strategy to list of supplies."""
     return load_balancer(power_supplies)
 
@@ -63,7 +63,7 @@ def balance_by_efficiency(
         ]
     }
 
-def balance_by_hymidity(
+def balance_by_humidity(
     power_supplies: List[PowerSupply]
 ) -> Dict[str, List[List[bool]]]:
     """Flat Humidity based load balance strategy."""
