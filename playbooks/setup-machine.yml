@@ -1,3 +1,4 @@
+---
 - name: setup machine
   hosts: all
   become: true
@@ -8,7 +9,6 @@
     default_container_command: sleep 1d
 
   tasks:
-
     - name: Install required system packages
       apt:
         pkg:

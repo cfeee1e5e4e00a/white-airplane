@@ -9,6 +9,7 @@ module.exports = {
             files: '**/*.{yml,yaml}',
             options: {
                 tabWidth: 2,
+                semi: false,
             },
         },
         {
