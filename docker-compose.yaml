@@ -20,9 +20,22 @@ services:
     volumes:
       - redis_data:/data
     command: redis-server --save 20 1 --loglevel warning --requirepass babajendujiji
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=cfeee1e5e4e00a
+    volumes:
+      - mongo_data:/data/db
+
   
 volumes:
   mqtt_data:
   mqtt_log:
   mqtt_config:
+  mongo_data:
   redis_data:
