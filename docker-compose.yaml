@@ -7,6 +7,11 @@ services:
     ports:
       - '1883:1883'
       - '18083:18083'
+    volumes:
+      - mqtt_data:/opt/emqx/data
+      - mqtt_log:/opt/emqx/log
+      - mqtt_config:/opt/emqx/etc
+
   redis:
     image: redis
     restart: always
@@ -17,4 +22,7 @@ services:
     command: redis-server --save 20 1 --loglevel warning --requirepass babajendujiji
   
 volumes:
+  mqtt_data:
+  mqtt_log:
+  mqtt_config:
   redis_data:
