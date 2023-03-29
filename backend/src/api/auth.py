@@ -3,13 +3,15 @@ import time
 from datetime import datetime, timedelta
 
 import fastapi_login
-from fastapi import Depends, HTTPException, APIRouter
+from fastapi import Depends, HTTPException, APIRouter, Form
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 from passlib.context import CryptContext
 from backend.src.env import env
+from pymongo.collection import Collection
+from backend.src.db import mongo
 
-from backend.src.schemas.user import find_user_by_login
+from backend.src.schemas.user import find_user_by_login, UserCreate
 
 auth_router = APIRouter()
 
@@ -29,3 +31,11 @@ def login(data: OAuth2PasswordRequestForm = Depends()):
         raise HTTPException(status_code=400, detail='Неверный пароль')
     exp = time.mktime(datetime.now() + timedelta(days=EXPIRES_AFTER_DAYS))
     return jwt.encode({'username': user.login, 'role': user.role, 'exp': exp}, env['JWT_SECRET'], algorithm='HS256')
+
+@auth_router.post('/signup')
+def create_user(user: UserCreate):
+    collection: Collection['User'] = mongo.db.users
+    collection.insert_one({'login': user.login, 'password': user.password, 'role': user.role})
+    exp = time.mktime(datetime.now() + timedelta(days=EXPIRES_AFTER_DAYS))
+    return jwt.encode({'username': user.login, 'role': user.role, 'exp': exp}, env['JWT_SECRET'], algorithm='HS256')
+

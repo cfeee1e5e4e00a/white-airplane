@@ -1,6 +1,7 @@
 from typing import Union, Literal, TypedDict
 
 from bson import ObjectId
+from pydantic.main import BaseModel
 from pymongo.collection import Collection
 
 from backend.src.db import mongo
@@ -14,6 +15,10 @@ class User(TypedDict):
     password: str
     role: Role
 
+class UserCreate(BaseModel):
+    login: str
+    password: str
+    role: Role
 
 def get_user(id: str) -> User:
     collection: Collection['User'] = mongo.db.users
@@ -23,3 +28,6 @@ def get_user(id: str) -> User:
 def find_user_by_login(login: str) -> User | None:
     collection: Collection['User'] = mongo.db.users
     return collection.find_one({'login': login})
+
+def create_user():
+    pass
