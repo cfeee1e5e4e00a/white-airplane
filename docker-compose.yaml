@@ -47,7 +47,14 @@ services:
       - influx_data:/var/lib/influxdb2
       - influx_config:/etc/influxdb2
 
-  
+  grafana:
+    image: grafana/grafana-oss
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - grafana_provisioning:/etc/grafana/provisioning/
+    depends_on:
+      - influx
+
 volumes:
   mqtt_data:
   mqtt_log:
@@ -56,3 +63,5 @@ volumes:
   redis_data:
   influx_data:
   influx_config:
+  grafana_data:
+  grafana_provisioning:
