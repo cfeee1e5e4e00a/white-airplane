@@ -1,6 +1,6 @@
 fastapi
 pymongo
-uvicorn
+uvicorn[standard]
 paho-mqtt
 redis
 fastapi-login

@@ -9,7 +9,8 @@ from src.models.sensor_state import *
 from src.env import env
 
 MQTT_BROKER = env["MQTT_BROKER"]
-MQTT_PORT   = int(env["MQTT_PORT"])
+MQTT_PORT = int(env["MQTT_PORT"])
+
 
 class SensorsAggregator:
     """Entity subscribed to sensor data topic."""
@@ -42,11 +43,11 @@ class SensorsAggregator:
     def __init__(self, redis) -> None:
         """"""
         self.redis: StrictRedis = redis
-        
-        self.mqtt = Client('sensors-aggregator')
+
+        self.mqtt = Client("sensors-aggregator")
         self.mqtt.on_connect = self.__on_connect
         self.mqtt.on_message = self.__on_message
-        self.mqtt.connect(host=env['MQTT_BROKER'], port=int(env['MQTT_PORT']))
+        self.mqtt.connect(host=env["MQTT_BROKER"], port=int(env["MQTT_PORT"]))
         self.mqtt.loop_start()
 
     def stop(self):
@@ -67,6 +68,7 @@ class SensorsAggregator:
     def __on_connect(self, client, userdata, flags, rc):
         for t in SensorsAggregator.SENSOR_TOPICS:
             client.subscribe(t)
+
     # def __on_message(self, cls):
     #     """"""
     #     def callback(client, userdata, msg):

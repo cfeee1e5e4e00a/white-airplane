@@ -11,5 +11,5 @@ REDIS = redis.StrictRedis(
     port=REDIS_PORT,
     password=REDIS_PASS,
     charset="utf-8",
-    decode_responses=True
+    decode_responses=True,
 )

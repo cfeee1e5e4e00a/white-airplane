@@ -3,14 +3,17 @@ from time import sleep
 from paho.mqtt.client import Client
 from env import env
 
+
 def on_connect(client, userdata, flags, rc):
     # This will be called once the client connects
     print(f"Connected with result code {rc}")
     # Subscribe here!
     client.subscribe("ping")
 
+
 def on_message(a, b, c):
     print(a, b, c)
+
 
 mqtt = Client()
 mqtt.on_connect = on_connect

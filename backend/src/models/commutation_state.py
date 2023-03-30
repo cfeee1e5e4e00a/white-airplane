@@ -15,11 +15,12 @@ DEFAULT_FLAT_COUNT = 2
 DEFAULT_RELAY_COUNT = 14
 DISCONNECTED_RESERVE_STATE = 0
 
+
 @dataclass
 class Flat:
     """
     Struct containing sensor data.
-    
+
     Leaf in supply-house-flat topology.
     """
 
@@ -27,6 +28,7 @@ class Flat:
     consumption_current: Amps = 0.0
     humidity: Density = 100.0
     temperature: Celsius = 0.0
+
 
 @dataclass
 class House:
@@ -43,18 +45,19 @@ class House:
         """:return: Integral for house consumption current."""
         return sum(flat.consumption_current for flat in self.flats)
 
+
 @dataclass
 class PowerSupply:
     """
     Struct containing PowerSupply data.
-    
+
     Root in supply-house-flat topology.
     """
 
     connections: List[House] = field()
     generation_current: Amps = 0.0
     consumption_current: Amps = 0.0
-    
+
     SUPPLY_VOLTAGE: ClassVar[Volts] = 12.0
     OUTLET_VOLTAGE: ClassVar[Volts] = 220.0
 
@@ -62,7 +65,7 @@ class PowerSupply:
     def power(self) -> Power:
         """:return: self power of power supply."""
         return self.SUPPLY_VOLTAGE * self.generation_current
-    
+
     @property
     def ideal_power(self) -> Power:
         """:return: ideal power of power supply."""

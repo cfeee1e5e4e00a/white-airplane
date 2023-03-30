@@ -1,16 +1,11 @@
-from http.client import HTTPException
-from typing import Union, Literal, TypedDict
-
 from bson import ObjectId
-from pydantic.fields import Field
-from pydantic.main import BaseModel
+from typing import Literal, TypedDict
 from pymongo.collection import Collection
-from fastapi import status
 
 from src.db import mongo
 
 
-Role = Literal['ADMIN', 'USER', 'OPERATOR']
+Role = Literal["admin", "user", "operator"]
 
 
 class User(TypedDict):
@@ -20,35 +15,16 @@ class User(TypedDict):
     role: Role
 
 
-def get_user(id: str) -> User:
-    collection: Collection['User'] = mongo.db.users
-    return collection.find_one({'_id': id})
+def create_user(username: str, password_hash: str, role: Role):
+    collection: Collection["User"] = mongo.db.users
+    collection.insert_one(User(login=username, password=password_hash, role=role))
 
 
-def find_user_by_username(login: str) -> User | None:
-    collection: Collection['User'] = mongo.db.users
-    return collection.find_one({'login': login})
+def get_user_by_id(id: str) -> User:
+    collection: Collection["User"] = mongo.db.users
+    return collection.find_one({"_id": id})
 
 
-def check_login_in_db(login: str):
-    collection: Collection['User'] = mongo.db.users
-    if not collection.find_one({'login': login}):
-        return False
-    else:
-        return True
-
-# async def get_current_user(token: str = Depends(oauth2_scheme)):
-#     user = await users_utils.get_user_by_token(token)
-#     if not user:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Invalid authentication credentials",
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
-#     if not user["is_active"]:
-#         raise HTTPException(
-#             status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
-#         )
-#     return user
-def get_user_by_token(token: str):
-    return
+def get_user_by_username(login: str) -> User | None:
+    collection: Collection["User"] = mongo.db.users
+    return collection.find_one({"login": login})
