@@ -4,8 +4,6 @@ from src.env import env
 MQTT_BROKER = env["MQTT_BROKER"]
 MQTT_PORT = int(env["MQTT_PORT"])
 
-print(MQTT_BROKER, MQTT_PORT)
-
 
 def on_publish(client, userdata, mid):
     """TODO: Logging."""

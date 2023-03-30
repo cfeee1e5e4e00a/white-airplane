@@ -12,11 +12,5 @@ module.exports = {
                 semi: false,
             },
         },
-        {
-            files: 'tailwind.config.*',
-            options: {
-                printWidth: 200,
-            },
-        },
     ],
 };
