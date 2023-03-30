@@ -58,8 +58,6 @@ class PowerSupplyCurrent:
 
 SensorData = FlatTemperature | FlatHumidity | FlatCurrent | PowerSupplyCurrent
 
-SensorData = FlatTemperature | FlatHumidity | FlatCurrent | SupplyCurrent
-
 
 def sensor_data_from_str(cls, data: str) -> SensorData:
     # print(data)
