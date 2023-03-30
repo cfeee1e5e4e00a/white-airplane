@@ -3,7 +3,7 @@ import uvicorn
 from fastapi import FastAPI
 from strawberry.fastapi import GraphQLRouter
 
-from backend.src.api.auth import auth_router
+from src.api.auth import auth_router
 
 
 @strawberry.type

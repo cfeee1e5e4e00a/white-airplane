@@ -7,11 +7,11 @@ from fastapi import Depends, HTTPException, APIRouter, Form
 from fastapi.security import OAuth2PasswordRequestForm
 from jose import jwt
 from passlib.context import CryptContext
-from backend.src.env import env
+from src.env import env
 from pymongo.collection import Collection
-from backend.src.db import mongo
+from src.db import mongo
 
-from backend.src.schemas.user import find_user_by_login, UserCreate
+from src.schemas.user import find_user_by_login, UserCreate
 
 auth_router = APIRouter()
 

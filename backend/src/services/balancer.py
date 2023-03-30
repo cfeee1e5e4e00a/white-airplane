@@ -9,12 +9,16 @@ Strategies:
 """
 
 from typing import Dict, Protocol
-from models.commutation_state import *
+from src.models.commutation_state import *
+
+RelayScheme = List[List[int]]
+
+FLAT_RELAY_DISABLED = 3
 
 class LoadBalancer(Protocol):
     """Strategy class for load balancing."""
 
-    def __call__(power_supplies: List[PowerSupply]) -> Dict[str, List[List[bool]]]:
+    def __call__(power_supplies: List[PowerSupply]) -> RelayScheme:
         """
         Analyze topology data and get new relay connections.
 
@@ -26,71 +30,31 @@ class LoadBalancer(Protocol):
 
 def apply_balancer(
     load_balancer: LoadBalancer,
-    power_supplies: List[PowerSupply]
-) -> Dict[str, List[List[bool]]]:
+    power_supplies: List[PowerSupply],
+) -> RelayScheme:
     """Apply balancing Strategy to list of supplies."""
     return load_balancer(power_supplies)
 
 def disconnect_all_relays(
     power_supplies: List[PowerSupply]
-) -> Dict[str, List[List[bool]]]:
+) -> RelayScheme:
     """Cancel Strategy. Disables all relays."""
-    return {
-        "flat_relays":
-        [
-            [False] * len(house.flats) for house in power_supplies[0].connections 
-        ] 
-        ,
-        "house_relays":
-        [
-            [False] * len(supply.connections) for supply in power_supplies
-        ]
-    }
+    return [ [FLAT_RELAY_DISABLED] * len(house.flats) for house in power_supplies[0].connections ]
 
 def balance_by_efficiency(
     power_supplies: List[PowerSupply]
-) -> Dict[str, List[List[bool]]]:
+) -> RelayScheme:
     """Power Supply Efficiency based load balance strategy."""
-    return {
-        "flat_relays":
-        [
-            [False] * len(house.flats) for house in power_supplies[0].connections 
-        ] 
-        ,
-        "house_relays":
-        [
-            [False] * len(supply.connections) for supply in power_supplies
-        ]
-    }
+    return disconnect_all_relays(power_supplies)
 
 def balance_by_humidity(
     power_supplies: List[PowerSupply]
-) -> Dict[str, List[List[bool]]]:
+) -> RelayScheme:
     """Flat Humidity based load balance strategy."""
-    return {
-        "flat_relays":
-        [
-            [False] * len(house.flats) for house in power_supplies[0].connections 
-        ] 
-        ,
-        "house_relays":
-        [
-            [False] * len(supply.connections) for supply in power_supplies
-        ]
-    }
+    return disconnect_all_relays(power_supplies)
 
 def balance_by_temperature(
     power_supplies: List[PowerSupply]
-) -> Dict[str, List[List[bool]]]:
+) -> RelayScheme:
     """Flat Temperature based load balance strategy."""
-    return {
-        "flat_relays":
-        [
-            [False] * len(house.flats) for house in power_supplies[0].connections 
-        ] 
-        ,
-        "house_relays":
-        [
-            [False] * len(supply.connections) for supply in power_supplies
-        ]
-    }
+    return disconnect_all_relays(power_supplies)

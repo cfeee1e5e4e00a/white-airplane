@@ -4,9 +4,9 @@ from bson import ObjectId
 from pydantic.main import BaseModel
 from pymongo.collection import Collection
 
-from backend.src.db import mongo
+from src.db import mongo
 
-Role = Union[Literal['ADMIN', 'USER', 'OPERATOR']]
+Role = Literal['ADMIN', 'USER', 'OPERATOR']
 
 
 class User(TypedDict):

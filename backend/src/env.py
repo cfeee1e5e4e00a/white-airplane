@@ -6,4 +6,4 @@ load_dotenv()
 
 
 env = os.environ
-print(env)
+# print(env)

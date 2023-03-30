@@ -13,7 +13,7 @@ DEFAULT_SUPPLY_COUNT = 4
 DEFAULT_HOUSE_COUNT = 6
 DEFAULT_FLAT_COUNT = 2
 DEFAULT_RELAY_COUNT = 14
-
+DISCONNECTED_RESERVE_STATE = 0
 
 @dataclass
 class Flat:
@@ -23,7 +23,7 @@ class Flat:
     Leaf in supply-house-flat topology.
     """
 
-    connected: bool = False
+    supply_index: int = 0
     consumption_current: Amps = 0.0
     humidity: Density = 100.0
     temperature: Celsius = 0.0
@@ -37,11 +37,10 @@ class House:
     """
 
     flats: List[Flat] = field(default_factory=lambda: [Flat()] * DEFAULT_FLAT_COUNT)
-    connected: bool = False
 
     @property
-    def house_consumption(self) -> Amps:
-        """:return: Integral for house consumption."""
+    def house_consumption_current(self) -> Amps:
+        """:return: Integral for house consumption current."""
         return sum(flat.consumption_current for flat in self.flats)
 
 @dataclass
