@@ -32,6 +32,21 @@ services:
     volumes:
       - mongo_data:/data/db
 
+  influx:
+    image: influxdb
+    restart: always
+    ports:
+      - 8086:8086
+    environment:
+      - DOCKER_INFLUXDB_INIT_USERNAME=root
+      - DOCKER_INFLUXDB_INIT_PASSWORD=cfeee1e5e4e00a
+      - DOCKER_INFLUXDB_INIT_ORG=cfeee1e5e4e00a
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXBD_INIT_BUCKET=logs
+    volumes:
+      - influx_data:/var/lib/influxdb2
+      - influx_config:/etc/influxdb2
+
   
 volumes:
   mqtt_data:
@@ -39,3 +54,5 @@ volumes:
   mqtt_config:
   mongo_data:
   redis_data:
+  influx_data:
+  influx_config:
