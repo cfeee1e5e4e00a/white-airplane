@@ -1,6 +1,17 @@
 version: '3.8'
 
 services:
+  backend:
+    build: ./backend
+    restart: always
+    ports:
+      - '8000:8000'
+    depends_on:
+      - mqtt
+      - redis
+      - mongo
+      - influx
+
   mqtt:
     image: 'emqx'
     restart: always
