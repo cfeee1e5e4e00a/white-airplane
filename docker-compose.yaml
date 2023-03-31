@@ -1,6 +1,17 @@
 version: '3.8'
 
 services:
+  backend:
+    build: ./backend
+    restart: always
+    ports:
+      - '8000:8000'
+    depends_on:
+      - mqtt
+      - redis
+      - mongo
+      - influx
+
   mqtt:
     image: 'emqx'
     restart: always
@@ -25,7 +36,7 @@ services:
     image: mongo
     restart: always
     ports:
-      - 27017:27017
+      - '27017:27017'
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=cfeee1e5e4e00a
@@ -36,13 +47,13 @@ services:
     image: influxdb
     restart: always
     ports:
-      - 8086:8086
+      - '8086:8086'
     environment:
       - DOCKER_INFLUXDB_INIT_USERNAME=root
       - DOCKER_INFLUXDB_INIT_PASSWORD=cfeee1e5e4e00a
       - DOCKER_INFLUXDB_INIT_ORG=cfeee1e5e4e00a
       - DOCKER_INFLUXDB_INIT_MODE=setup
-      - DOCKER_INFLUXBD_INIT_BUCKET=logs
+      - DOCKER_INFLUXDB_INIT_BUCKET=logs
     volumes:
       - influx_data:/var/lib/influxdb2
       - influx_config:/etc/influxdb2
@@ -52,6 +63,8 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - grafana_provisioning:/etc/grafana/provisioning/
+    ports:
+      - '3000:3000'
     depends_on:
       - influx
 
