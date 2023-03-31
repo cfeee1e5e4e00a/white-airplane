@@ -36,7 +36,7 @@ services:
     image: mongo
     restart: always
     ports:
-      - 27017:27017
+      - '27017:27017'
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=cfeee1e5e4e00a
@@ -47,7 +47,7 @@ services:
     image: influxdb
     restart: always
     ports:
-      - 8086:8086
+      - '8086:8086'
     environment:
       - DOCKER_INFLUXDB_INIT_USERNAME=root
       - DOCKER_INFLUXDB_INIT_PASSWORD=cfeee1e5e4e00a
@@ -63,6 +63,8 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - grafana_provisioning:/etc/grafana/provisioning/
+    ports:
+      - '3000:3000'
     depends_on:
       - influx
 
