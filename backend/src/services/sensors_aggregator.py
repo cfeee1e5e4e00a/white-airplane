@@ -3,11 +3,12 @@ from time import sleep
 from typing import Any, List, Dict
 from paho.mqtt import subscribe
 from redis import StrictRedis
+from influxdb import InfluxDBClient
 from paho.mqtt.client import Client
 
-from src.models.sensor_state import *
+from models.sensor_state import *
 
-from src.env import env
+from backend.src.env import env
 
 MQTT_BROKER = env["MQTT_BROKER"]
 MQTT_PORT = int(env["MQTT_PORT"])
@@ -43,9 +44,10 @@ TOPIC2CLASS: Dict[str, SensorData] = {
 class SensorsAggregator:
     """Entity subscribed to sensor data topic."""
 
-    def __init__(self, redis) -> None:
+    def __init__(self, redis, influx) -> None:
         """"""
         self.redis: StrictRedis = redis
+        self.influx: InfluxDBClient = influx
 
         self.mqtt = Client("sensors-aggregator")
 
@@ -78,6 +80,7 @@ class SensorsAggregator:
         self.transfering = False
 
         self.redis.set(str(sensor_data), sensor_data.value)
+        self.influx.write_points({'type':str(sensor_data), 'value': sensor_data.value})
 
     def __on_connect(self, client, userdata, flags, rc):
         for t in SensorsAggregator.SENSOR_TOPICS:
@@ -93,7 +96,7 @@ class SensorsAggregator:
     #         print(str(sensor_data), ":", sensor_data.value)
 
     #         self.redis.set(str(sensor_data), sensor_data.value)
-    #         #TODO: influx gazfuck sturmentrahen
+    #         #TODO: influx gazfuck sturmentrahen dotabase2
 
     #     return callback
     def __on_connect(self, client: Client, userdata, flags, rc):
