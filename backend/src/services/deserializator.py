@@ -98,7 +98,7 @@ class Deserializator:
                         .flats[int(d["flat"])]
                     )
                     arg_name = Deserializator.SENSOR2TOPOLOGY_ARG[sensor_name]
-                    setattr(flat, arg_name, data)
+                    setattr(flat, arg_name, float(data))
                     supplies_list[0].connections[int(d["house"])].flats[
                         int(d["flat"])
                     ] = flat
@@ -107,7 +107,7 @@ class Deserializator:
                     arg_name = Deserializator.SENSOR2TOPOLOGY_ARG[sensor_name][
                         d["position"]
                     ]
-                    setattr(supply, arg_name, data)
+                    setattr(supply, arg_name, float(data))
                     supplies_list[int(d["supply"])] = supply
 
         return supplies_list

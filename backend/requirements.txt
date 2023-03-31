@@ -10,5 +10,5 @@ passlib[bcrypt]
 PyJWT
 strawberry-graphql[fastapi]
 redis
-influxdb
+influxdb_client
 dacite

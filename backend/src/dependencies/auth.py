@@ -5,6 +5,7 @@ from strawberry.types import Info
 from strawberry.fastapi import GraphQLRouter
 from strawberry.fastapi.handlers import GraphQLWSHandler
 from strawberry.subscriptions.protocols.graphql_ws.types import OperationMessage
+from json import loads
 
 from src.env import env
 from src.schemas.user import get_user_by_username
@@ -18,7 +19,9 @@ class IsAuthenticated(BasePermission):
         source,
         info: Info,
     ):
-        token: str = info.context.get("Authorization")
+        connection_params = info.context.get("connection_params")
+        token: str | None = connection_params["authToken"]
+
         if not token:
             return False
 
@@ -38,12 +41,12 @@ class AuthGraphQLWSHandler(GraphQLWSHandler):
 
     async def handle_connection_init(self, message: OperationMessage):
         connection_params = message["payload"]
-        self.token = connection_params.get("Authorization")
+        self.token = connection_params.get("authToken")
         await super().handle_connection_init(message)
 
     async def get_context(self):
         context = await super().get_context()
-        context["Authorization"] = self.token
+        context["authToken"] = self.token
         return context
 
 

@@ -1,13 +1,13 @@
 """"""
 from time import sleep
-from typing import Any, List, Dict
-from paho.mqtt import subscribe
+from datetime import datetime
+from typing import List, Dict
 from redis import StrictRedis
-from influxdb import InfluxDBClient
+from influxdb_client import InfluxDBClient, WritePrecision, Point
+from influxdb_client.client.write_api import SYNCHRONOUS
 from paho.mqtt.client import Client
 
 from src.models.sensor_state import *
-
 from src.env import env
 
 MQTT_BROKER = env["MQTT_BROKER"]
@@ -44,10 +44,10 @@ TOPIC2CLASS: Dict[str, SensorData] = {
 class SensorsAggregator:
     """Entity subscribed to sensor data topic."""
 
-    def __init__(self, redis, influx) -> None:
+    def __init__(self, redis: StrictRedis, influx: InfluxDBClient) -> None:
         """"""
-        self.redis: StrictRedis = redis
-        self.influx: InfluxDBClient = influx
+        self.redis = redis
+        self.influx = influx
 
         self.mqtt = Client("sensors-aggregator")
 
@@ -80,7 +80,18 @@ class SensorsAggregator:
         self.transfering = False
 
         self.redis.set(str(sensor_data), sensor_data.value)
-        self.influx.write_points({"type": str(sensor_data), "value": sensor_data.value})
+
+        p = (
+            Point("sensors_logs")
+            .tag("type", str(sensor_data))
+            .field("value", sensor_data.value)
+            .time(datetime.utcnow(), WritePrecision.MS)
+        )
+
+        with self.influx.write_api(write_options=SYNCHRONOUS) as write_api:
+            write_api.write(bucket="logs", record=p)
+
+        print(f"{str(sensor_data)} = {sensor_data.value}")
 
     def __on_connect(self, client, userdata, flags, rc):
         for t in SensorsAggregator.SENSOR_TOPICS:

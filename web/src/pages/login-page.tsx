@@ -1,14 +1,30 @@
 import { FC, FormEventHandler } from 'react';
 import { Link } from 'react-router-dom';
 import { useInput } from '@/hooks/useInput';
+import { rest } from '@/api/rest';
+import { setAuthorizationToken } from '@/api/authorization-storage';
 
 export const LoginPage: FC = () => {
     const login = useInput();
     const password = useInput();
 
-    const onSubmit: FormEventHandler = (event) => {
+    const onSubmit: FormEventHandler = async (event) => {
         event.preventDefault();
-        console.log(login.value, password.value);
+
+        console.log(1);
+
+        const token = await rest
+            .post('login', {
+                json: {
+                    username: login.value,
+                    password: password.value,
+                },
+            })
+            .json<string>();
+
+        setAuthorizationToken(token);
+
+        window.location.reload();
     };
 
     return (

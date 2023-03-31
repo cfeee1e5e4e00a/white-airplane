@@ -1,6 +1,13 @@
 version: '3.8'
 
 services:
+  web:
+    build: ./web
+    restart: always
+    ports:
+      - '5000:80'
+    environment:
+      - VITE_APP_BASE=cfeee1e5e4e00a.ru:8000
   backend:
     build: ./backend
     restart: always
@@ -49,10 +56,10 @@ services:
     ports:
       - '8086:8086'
     environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_USERNAME=root
       - DOCKER_INFLUXDB_INIT_PASSWORD=cfeee1e5e4e00a
       - DOCKER_INFLUXDB_INIT_ORG=cfeee1e5e4e00a
-      - DOCKER_INFLUXDB_INIT_MODE=setup
       - DOCKER_INFLUXDB_INIT_BUCKET=logs
     volumes:
       - influx_data:/var/lib/influxdb2

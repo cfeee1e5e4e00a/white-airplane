@@ -16,7 +16,6 @@ DEFAULT_RELAY_COUNT = 14
 DISCONNECTED_RESERVE_STATE = 3
 
 
-
 @dataclass
 class Flat:
     """

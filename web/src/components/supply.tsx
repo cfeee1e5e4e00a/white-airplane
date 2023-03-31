@@ -2,9 +2,12 @@ import { FC } from 'react';
 
 type Props = {
     id: number;
+    powerIn: number;
+    powerOut: number;
+    efficiency: number;
 };
 
-export const Supply: FC<Props> = ({ id }) => {
+export const Supply: FC<Props> = ({ id, powerIn, powerOut, efficiency }) => {
     return (
         <div className="flex flex-col border-2 border-black p-1 w-fit h-min gap-1 items-center">
             <h2 className="text-xl font-semibold">БП{id}</h2>
@@ -14,7 +17,7 @@ export const Supply: FC<Props> = ({ id }) => {
                     className="font-medium text-lg cursor-pointer break-keep w-full"
                 >
                     <span>
-                        P<sub>in</sub> = 2 Вт/ч
+                        P<sub>in</sub> = {powerIn.toFixed(0)} Вт/ч
                     </span>
                 </label>
                 <div
@@ -30,7 +33,7 @@ export const Supply: FC<Props> = ({ id }) => {
                     className="font-medium text-lg cursor-pointer break-keep w-full"
                 >
                     <span>
-                        P<sub>out</sub> = 2 Вт/ч
+                        P<sub>out</sub> = {powerOut.toFixed(0)} Вт/ч
                     </span>
                 </label>
                 <div
@@ -41,7 +44,7 @@ export const Supply: FC<Props> = ({ id }) => {
                 </div>
             </div>
             <label className="font-medium text-lg cursor-pointer break-keep w-full">
-                <span>η = 2 %</span>
+                <span>η = {efficiency.toFixed(0)} %</span>
             </label>
         </div>
     );
