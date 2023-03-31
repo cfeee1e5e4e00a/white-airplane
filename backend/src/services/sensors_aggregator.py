@@ -8,7 +8,7 @@ from paho.mqtt.client import Client
 
 from models.sensor_state import *
 
-from backend.src.env import env
+from src.env import env
 
 MQTT_BROKER = env["MQTT_BROKER"]
 MQTT_PORT = int(env["MQTT_PORT"])
@@ -80,7 +80,7 @@ class SensorsAggregator:
         self.transfering = False
 
         self.redis.set(str(sensor_data), sensor_data.value)
-        self.influx.write_points({'type':str(sensor_data), 'value': sensor_data.value})
+        self.influx.write_points({"type": str(sensor_data), "value": sensor_data.value})
 
     def __on_connect(self, client, userdata, flags, rc):
         for t in SensorsAggregator.SENSOR_TOPICS:
