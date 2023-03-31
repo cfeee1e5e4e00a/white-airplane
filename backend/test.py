@@ -6,7 +6,11 @@ import redis
 from itertools import chain
 
 from src.services.deserializator import Deserializator
-from src.services.balancer import apply_balancer, disconnect_all_relays as balancer
+from src.services.balancer import (
+    apply_balancer,
+    disconnect_all_relays as balancer,
+    balance_by_efficiency as efficiency_balancer,
+)
 from src.services.relay_controller import RelayController
 from src.services.sensors_aggregator import (
     SensorsAggregator,
@@ -41,6 +45,35 @@ def balance_efficiency_simulation():
 
     return dumps(
         apply_balancer(balancer, [PowerSupply(houses)] * DEFAULT_SUPPLY_COUNT),
+        sort_keys=True,
+        indent=4,
+    )
+
+
+def balance_efficiency_1():
+    x = [1, 14, 7, 9, 7, 3, 3, 2, 1, 6, 1, 6, 3, 4]
+
+    houses = [
+        House(
+            [
+                Flat(consumption_current=x.pop(0))
+                for j in range(DEFAULT_RELAY_COUNT // DEFAULT_HOUSE_COUNT)
+            ]
+        )
+        for i in range(DEFAULT_HOUSE_COUNT)
+    ]
+
+    for i in range(DEFAULT_RELAY_COUNT % DEFAULT_HOUSE_COUNT):
+        houses[-(DEFAULT_RELAY_COUNT % DEFAULT_HOUSE_COUNT) + i].flats.append(
+            Flat(consumption_current=x.pop(0))
+        )
+
+    # print(houses)
+
+    return dumps(
+        apply_balancer(
+            efficiency_balancer, [PowerSupply(houses)] * DEFAULT_SUPPLY_COUNT
+        ),
         sort_keys=True,
         indent=4,
     )
@@ -135,12 +168,13 @@ if __name__ == "__main__":
     tests = [
         balance_efficiency_default,
         balance_efficiency_simulation,
+        balance_efficiency_1,
         # relay_controller_init,
         # relay_controller_publish_scheme,
         # redis_connection_and_set,
         # sensors_aggregator_init,
         # redis_default,
-        deserializator_call,
+        # deserializator_call,
     ]
 
     m = max(len(s.__name__) for s in tests)
