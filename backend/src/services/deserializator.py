@@ -1,6 +1,6 @@
 from itertools import chain
 import re
-from typing import Dict, List
+from typing import Dict, List, Set
 from redis import StrictRedis
 
 from src.models.commutation_state import *
@@ -44,10 +44,10 @@ class Deserializator:
         self.redis = redis
 
     def __call__(self) -> List[PowerSupply]:
-        supplies: Dict[PowerSupply] = {}
-        houses: Dict[House] = {}
+        supplies: Dict[str, PowerSupply] = {}
+        houses: Dict[str, House] = {}
         houses_list: List[House] = []
-        flats: Dict[Flat] = {}
+        flat_in_house: Set[str] = set()
         flats_list: List[Flat] = []
 
         redis_keys = self.__redis_get_sensor_keys()
@@ -59,18 +59,18 @@ class Deserializator:
                 match id_type:
                     case "house":
                         houses[node_id] = House(flats_list)
-                    case "flat":
-                        flats[node_id] = Flat()
                     case "supply":
                         supplies[node_id] = PowerSupply(houses_list)
-                    case _:
-                        pass
+
+            match d:
+                case {"house": a, "flat": b}:
+                    if d["house"] + d["flat"] not in flat_in_house:
+                        flat_in_house.add(d["house"] + d["flat"])
+                        flats_list.append(Flat())
 
         supplies_list: List[PowerSupply] = []
 
-        z_d_l = list(
-            zip([supplies, houses, flats], [supplies_list, houses_list, flats_list])
-        )
+        z_d_l = list(zip([supplies, houses], [supplies_list, houses_list]))
 
         for i in range(len(z_d_l)):
             for j in range(len(list(z_d_l[i][0].keys()))):
@@ -80,11 +80,11 @@ class Deserializator:
         relays_count = len(flats_list)
         flats_count = relays_count // houses_count
         for i in range(houses_count):
-            supplies_list[0].connections[-1].flats = flats_list[i : i + flats_count]
+            supplies_list[0].connections[i].flats = flats_list[i : i + flats_count]
         for i in range(relays_count % houses_count):
-            supplies_list[0].connections[-1].flats.append(
-                flats_list[-(relays_count % houses_count) + i]
-            )
+            supplies_list[0].connections[
+                -(relays_count % houses_count) + i
+            ].flats.append(flats_list[-(relays_count % houses_count) + i])
 
         for key, d in zip(redis_keys, sensor_keys):
             data = self.redis.get(key)
@@ -109,8 +109,6 @@ class Deserializator:
                     ]
                     setattr(supply, arg_name, data)
                     supplies_list[int(d["supply"])] = supply
-                case _:
-                    pass
 
         return supplies_list
 
