@@ -53,7 +53,7 @@ services:
       - DOCKER_INFLUXDB_INIT_PASSWORD=cfeee1e5e4e00a
       - DOCKER_INFLUXDB_INIT_ORG=cfeee1e5e4e00a
       - DOCKER_INFLUXDB_INIT_MODE=setup
-      - DOCKER_INFLUXBD_INIT_BUCKET=logs
+      - DOCKER_INFLUXDB_INIT_BUCKET=logs
     volumes:
       - influx_data:/var/lib/influxdb2
       - influx_config:/etc/influxdb2
